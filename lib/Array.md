@@ -537,3 +537,255 @@ dropWhile([1, 2, 3, 4], n => n >= 3); // [3,4]
 </details>
 
 <br>[⬆返回顶部](#contents)
+
+<!-- 2019年8月8日 23:29:58 -->
+### everyNth
+
+返回数组中序号（元素为数组的第几个元素）为n的倍数的所有元素。
+
+
+使用`Array.prototype.filter（）`创建一个包含给定数组中序号为n的倍数的所有元素的新数组。
+
+```js
+// const everyNth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1); 
+// 上边为原函数，不易理解，自己处理为以下
+const everyNth = (arr, nth) => arr.filter((e, i) => !((i+1) % nth) );
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+everyNth([1, 2, 3, 4, 5, 6], 2); // [ 2, 4, 6 ]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### filterFalsy
+
+Filters out the falsy values in an array.
+过滤掉数组中的假值`false`。
+
+使用`Array.prototype.filter（）`创建一个只包含真值`true`的新数组。
+
+```js
+const filterFalsy = arr => arr.filter(Boolean);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+filterFalsy(['', true, {}, false, 'sample', 1, 0]); // [true, {}, 'sample', 1]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### filterNonUnique
+
+过滤掉数组中重复的值。
+
+使用`Array.prototype.filter（）`创建一个只包含唯一值的新数组。
+
+```js
+// indexOf 是查某个指定的字符串在字符串首次出现的位置（索引值） （也就是从前往后查）
+// lastIndexOf 是从右向左查某个指定的字符串在字符串中最后一次出现的位置（也就是从后往前查）
+// 如果两个值相等，可说明该元素在数组中只出现一次
+const filterNonUnique = arr => arr.filter(i => arr.indexOf(i) === arr.lastIndexOf(i));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+filterNonUnique([1, 2, 2, 3, 4, 4, 5]); // [1, 3, 5]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### filterNonUniqueBy
+
+
+根据给定的比较器函数，过滤掉数组中的重复元素
+
+使用`Array.prototype.filter（）`和`Array.prototype.every（）`基于比较器函数`fn`创建一个只包含唯一值的数组。
+
+比较器函数有四个参数：被比较的两个元素的值及其索引。
+
+```js
+const filterNonUniqueBy = (arr, fn) =>
+  arr.filter((v, i) => arr.every((x, j) => (i === j) === fn(v, x, i, j)));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+filterNonUniqueBy(
+  [
+    { id: 0, value: 'a' },
+    { id: 1, value: 'b' },
+    { id: 2, value: 'c' },
+    { id: 1, value: 'd' },
+    { id: 0, value: 'e' }
+  ],
+  (a, b) => a.id == b.id
+); // [ { id: 2, value: 'c' } ]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### findLast
+
+返回所提供函数返回`true`的最后一个元素。
+
+使用`Array.prototype.filter（）`删除`fn`返回falsy值的元素，'Array.prototype.pop（）`来获取最后一个元素。
+
+```js
+const findLast = (arr, fn) => arr.filter(fn).pop();
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+findLast([1, 2, 3, 4], n => n % 2 === 1); // 3
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### findLastIndex
+
+返回提供的函数返回`true`的最后一个元素的索引。
+
+使用`Array.prototype.map（）`将每个元素映射到具有索引和值的数组。
+
+使用`Array.prototype.filter（）`删除`fn`返回falsy值的元素，'Array.prototype.pop（）`来获取最后一个。
+
+```js
+const findLastIndex = (arr, fn) =>
+  arr
+    .map((val, i) => [i, val])
+    .filter(([i, val]) => fn(val, i, arr))
+    .pop()[0];
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+findLastIndex([1, 2, 3, 4], n => n % 2 === 1); // 2 (index of the value 3)
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### flatten
+
+将数组展平到指定的深度。
+
+使用递归，每个深度级别将“深度”递减1。使用`Array.prototype.reduce（）`和`Array.prototype.concat（）`来合并元素或数组。
+
+基本情况下，当depth 等于1时停止递归。 忽略第二个参数的情况下， depth 默认为1（单层展开）。
+
+```js
+const flatten = (arr, depth = 1) =>
+  arr.reduce((a, v) => a.concat(depth > 1 && Array.isArray(v) ? flatten(v, depth - 1) : v), []);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+flatten([1, [2], 3, 4]); // [1, 2, 3, 4]
+flatten([1, [2, [3, [4, 5], 6], 7], 8], 2); // [1, 2, 3, [4, 5], 6, 7, 8]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### forEachRight
+
+从右向左遍历数组
+
+使用`Array.prototype.slice（0）`来克隆给定的数组，使用`Array.prototype.reverse（）`来反转它，使用`Array.prototype.forEach（）`迭代反转的数组。
+
+```js
+const forEachRight = (arr, callback) =>
+  arr
+    .slice(0)
+    .reverse()
+    .forEach(callback);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+forEachRight([1, 2, 3, 4], val => console.log(val)); // '4', '3', '2', '1'
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### groupBy
+
+根据给定的函数对数组的元素进行分组。
+
+使用`Array.prototype.map（）`将数组的值映射到函数或属性名称。
+使用`Array.prototype.reduce（）`创建一个对象，其中的键是从映射的结果中生成的。
+
+```js
+const groupBy = (arr, fn) =>
+  arr.map(typeof fn === 'function' ? fn : val => val[fn]).reduce((acc, val, i) => {
+    acc[val] = (acc[val] || []).concat(arr[i]);
+    return acc;
+  }, {});
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+groupBy([6.1, 4.2, 6.3], Math.floor); // {4: [4.2], 6: [6.1, 6.3]}
+groupBy(['one', 'two', 'three'], 'length'); // {3: ['one', 'two'], 5: ['three']}
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### head
+
+返回数组的头部（第一个元素）。
+
+使用`arr [0]`返回传递数组的第一个元素。
+
+```js
+const head = arr => arr[0];
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+head([1, 2, 3]); // 1
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
