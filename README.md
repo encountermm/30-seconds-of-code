@@ -20,4 +20,4 @@
 #目录
 
 - [🔌 Adapter](/lib/Adapter.md)
-- [📚 Array](/lib/Adapter.md)
+- [📚 Array](/lib/Array.md)
