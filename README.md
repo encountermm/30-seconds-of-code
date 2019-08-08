@@ -12,6 +12,8 @@
 
 原文：[https://github.com/30-seconds/30-seconds-of-code](https://github.com/30-seconds/30-seconds-of-code)
 
+鉴于蔡宝坚作者的[https://github.com/kujian/30-seconds-of-code](https://github.com/kujian/30-seconds-of-code)中文翻译版不是很全，本人决定翻译其所有。
+
 > 每日10个javascript小技巧 翻译，记录自己的学习过程，共同学习，共同交流 <br>
 >【注】：本人能力有限，如有翻译不当，欢迎指正。
 
