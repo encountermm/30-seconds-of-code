@@ -12,14 +12,18 @@
 
 原文：[https://github.com/30-seconds/30-seconds-of-code](https://github.com/30-seconds/30-seconds-of-code)
 
-鉴于蔡宝坚作者的[https://github.com/kujian/30-seconds-of-code](https://github.com/kujian/30-seconds-of-code)中文翻译版不是很全，本人决定翻译其所有。
+鉴于蔡宝坚作者的[https://github.com/kujian/30-seconds-of-code](https://github.com/kujian/30-seconds-of-code)中文翻译版不是很全，决定翻译其所有。
 
 > 每日10个javascript小技巧 翻译，记录自己的学习过程，共同学习，共同交流 <br>
 >【注】：本人能力有限，如有翻译不当，欢迎指正。
 
 ## 最新记要
 `Adapter`尚未翻译完
-翻译更新至`数组`的`head`方法
+
+
+- 2019年8月9日 22:37:49 -- 翻译更新至`数组`的`intersectionWith`方法 
+
+- 2019年8月9日 00:23:49 -- 翻译更新至`数组`的`head`方法
 
 # 目录
 

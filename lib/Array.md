@@ -230,7 +230,7 @@ bifurcate(['beep', 'boop', 'foo', 'bar'], [true, true, false, true]); // [ ['bee
 
 根据所传函数`fn`将数组元素分成两组，所传函数指定输入数组中某个元素所属的数组。如果函数`fn`返回`true`，则数组元素属于第一组；否则属于第二组。
 
-使用`Array.prototype.reduce（）`和`Array.prototype.push（）`根据`fn`为每个元素返回的值向组添加元素。
+使用`Array.prototype.reduce()`和`Array.prototype.push()`根据`fn`为每个元素返回的值向组添加元素。
 
 ```js
 const bifurcateBy = (arr, fn) =>
@@ -447,7 +447,7 @@ differenceWith([1, 1.2, 1.5, 3, 0], [1.9, 3, 0], (a, b) => Math.round(a) === Mat
 
 返回一个从左侧删除`n`个元素的新数组。
 
-使用`Array.prototype.slice（）`从左侧删除指定数量的元素。
+使用`Array.prototype.slice()`从左侧删除指定数量的元素。
 
 ```js
 const drop=(arr,n=1)=>arr.slice(n)
@@ -470,7 +470,7 @@ drop([1, 2, 3], 42); // []
 
 返回一个从右侧删除`n`个元素的新数组。
 
-使用`Array.prototype.slice（）`从右侧删除指定数量的元素。
+使用`Array.prototype.slice()`从右侧删除指定数量的元素。
 
 ```js
 const dropRight = (arr, n = 1) => arr.slice(0, -n);
@@ -493,7 +493,7 @@ dropRight([1, 2, 3], 42); // []
 
 从数组末尾删除元素，直到传递的函数返回`true`。 返回数组中的其余元素。
 
-循环遍历数组，使用`Array.prototype.slice（）`删除数组的最后一个元素，直到函数返回的值为`true`,返回剩余的元素。
+循环遍历数组，使用`Array.prototype.slice()`删除数组的最后一个元素，直到函数返回的值为`true`,返回剩余的元素。
 
 ```js
 const dropRightWhile = (arr, func) => {
@@ -518,7 +518,7 @@ dropRightWhile([1, 2, 3, 4], n => n < 3); // [1, 2]
 
 从数组左侧删除元素，直到传递的函数返回`true`。 返回数组中的其余元素。
 
-循环遍历数组，使用`Array.prototype.slice（）`删除数组的第一个元素，直到函数返回的值为`true`，返回剩余的元素。
+循环遍历数组，使用`Array.prototype.slice()`删除数组的第一个元素，直到函数返回的值为`true`，返回剩余的元素。
 
 ```js
 const dropWhile = (arr, func) => {
@@ -544,7 +544,7 @@ dropWhile([1, 2, 3, 4], n => n >= 3); // [3,4]
 返回数组中序号（元素为数组的第几个元素）为n的倍数的所有元素。
 
 
-使用`Array.prototype.filter（）`创建一个包含给定数组中序号为n的倍数的所有元素的新数组。
+使用`Array.prototype.filter()`创建一个包含给定数组中序号为n的倍数的所有元素的新数组。
 
 ```js
 // const everyNth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1); 
@@ -568,7 +568,7 @@ everyNth([1, 2, 3, 4, 5, 6], 2); // [ 2, 4, 6 ]
 Filters out the falsy values in an array.
 过滤掉数组中的假值`false`。
 
-使用`Array.prototype.filter（）`创建一个只包含真值`true`的新数组。
+使用`Array.prototype.filter()`创建一个只包含真值`true`的新数组。
 
 ```js
 const filterFalsy = arr => arr.filter(Boolean);
@@ -589,7 +589,7 @@ filterFalsy(['', true, {}, false, 'sample', 1, 0]); // [true, {}, 'sample', 1]
 
 过滤掉数组中重复的值。
 
-使用`Array.prototype.filter（）`创建一个只包含唯一值的新数组。
+使用`Array.prototype.filter()`创建一个只包含唯一值的新数组。
 
 ```js
 // indexOf 是查某个指定的字符串在字符串首次出现的位置（索引值） （也就是从前往后查）
@@ -614,7 +614,7 @@ filterNonUnique([1, 2, 2, 3, 4, 4, 5]); // [1, 3, 5]
 
 根据给定的比较器函数，过滤掉数组中的重复元素
 
-使用`Array.prototype.filter（）`和`Array.prototype.every（）`基于比较器函数`fn`创建一个只包含唯一值的数组。
+使用`Array.prototype.filter()`和`Array.prototype.every()`基于比较器函数`fn`创建一个只包含唯一值的数组。
 
 比较器函数有四个参数：被比较的两个元素的值及其索引。
 
@@ -647,7 +647,7 @@ filterNonUniqueBy(
 
 返回所提供函数返回`true`的最后一个元素。
 
-使用`Array.prototype.filter（）`删除`fn`返回falsy值的元素，'Array.prototype.pop（）`来获取最后一个元素。
+使用`Array.prototype.filter()`删除`fn`返回falsy值的元素，'Array.prototype.pop()`来获取最后一个元素。
 
 ```js
 const findLast = (arr, fn) => arr.filter(fn).pop();
@@ -668,9 +668,9 @@ findLast([1, 2, 3, 4], n => n % 2 === 1); // 3
 
 返回提供的函数返回`true`的最后一个元素的索引。
 
-使用`Array.prototype.map（）`将每个元素映射到具有索引和值的数组。
+使用`Array.prototype.map()`将每个元素映射到具有索引和值的数组。
 
-使用`Array.prototype.filter（）`删除`fn`返回falsy值的元素，'Array.prototype.pop（）`来获取最后一个。
+使用`Array.prototype.filter()`删除`fn`返回falsy值的元素，'Array.prototype.pop()`来获取最后一个。
 
 ```js
 const findLastIndex = (arr, fn) =>
@@ -695,7 +695,7 @@ findLastIndex([1, 2, 3, 4], n => n % 2 === 1); // 2 (index of the value 3)
 
 将数组展平到指定的深度。
 
-使用递归，每个深度级别将“深度”递减1。使用`Array.prototype.reduce（）`和`Array.prototype.concat（）`来合并元素或数组。
+使用递归，每个深度级别将“深度”递减1。使用`Array.prototype.reduce()`和`Array.prototype.concat()`来合并元素或数组。
 
 基本情况下，当depth 等于1时停止递归。 忽略第二个参数的情况下， depth 默认为1（单层展开）。
 
@@ -720,7 +720,7 @@ flatten([1, [2, [3, [4, 5], 6], 7], 8], 2); // [1, 2, 3, [4, 5], 6, 7, 8]
 
 从右向左遍历数组
 
-使用`Array.prototype.slice（0）`来克隆给定的数组，使用`Array.prototype.reverse（）`来反转它，使用`Array.prototype.forEach（）`迭代反转的数组。
+使用`Array.prototype.slice（0）`来克隆给定的数组，使用`Array.prototype.reverse()`来反转它，使用`Array.prototype.forEach()`迭代反转的数组。
 
 ```js
 const forEachRight = (arr, callback) =>
@@ -745,8 +745,8 @@ forEachRight([1, 2, 3, 4], val => console.log(val)); // '4', '3', '2', '1'
 
 根据给定的函数对数组的元素进行分组。
 
-使用`Array.prototype.map（）`将数组的值映射到函数或属性名称。
-使用`Array.prototype.reduce（）`创建一个对象，其中的键是从映射的结果中生成的。
+使用`Array.prototype.map()`将数组的值映射到函数或属性名称。
+使用`Array.prototype.reduce()`创建一个对象，其中的键是从映射的结果中生成的。
 
 ```js
 const groupBy = (arr, fn) =>
@@ -788,4 +788,249 @@ head([1, 2, 3]); // 1
 </details>
 
 <br>[⬆ 返回顶部](#contents)
+
+<!-- 2019年8月9日 21:33:55 -->
+
+### indexOfAll
+
+返回数组中`某元素val`的所有索引。
+
+如果`元素val`从未出现，则返回“[]”。
+
+使用`array.prototype.reduce()`循环元素并存储匹配元素的索引。
+返回索引数组。
+
+```js
+const indexOfAll = (arr, val) => arr.reduce((acc, el, i) => (el === val ? [...acc, i] : acc), []);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+indexOfAll([1, 2, 3, 1, 2, 3], 1); // [0,3]
+indexOfAll([1, 2, 3], 4); // []
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### initial
+
+返回一个包含除数组的最后一个元素之外的所有元素的数组。
+
+使用`arr.slice（0，-1）`返回除数组的最后一个元素之外的所有元素。
+
+```js
+const initial = arr => arr.slice(0, -1);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+initial([1, 2, 3]); // [1,2]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### initialize2DArray
+
+初始化给定宽度和高度以及值的二维数组。
+
+使用`Array.prototype.map()`生成h行，其中每行都是一个大小为w的新数组，用value初始化。 如果未提供该值，则默认为“null”。
+
+```js
+const initialize2DArray = (w, h, val = null) =>
+  Array.from({ length: h }).map(() => Array.from({ length: w }).fill(val));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+initialize2DArray(2, 2, 0); // [[0,0], [0,0]]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### initializeArrayWithRange
+
+初始化一个数组，其中包含指定范围内的数字，其中`start`、`end`及其它们的差值`step`。
+
+使用`Array.from()`创建一个所需长度的数组，`（end  -  start + 1）/ step`，以及一个map函数，用给定范围内的所需值填充它。
+`start`不传则使用默认值`0`。
+`step`不传则使用默认值`1`。
+
+```js
+const initializeArrayWithRange = (end, start = 0, step = 1) =>
+  Array.from({ length: Math.ceil((end - start + 1) / step) }, (v, i) => i * step + start);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+initializeArrayWithRange(5); // [0,1,2,3,4,5]
+initializeArrayWithRange(7, 3); // [3,4,5,6,7]
+initializeArrayWithRange(9, 0, 2); // [0,2,4,6,8]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### initializeArrayWithRangeRight
+
+初始化一个数组，其中包含指定范围内的数字（反向），其中`start`、`end`及其它们的差值`step`。
+
+使用`Array.from（Math.ceil（（end + 1-start）/ step））`来创建一个所需长度的数组（元素的数量等于`（end-start）/ step`或`（ end + 1-start）/ step` for inclusive end），`Array.prototype.map()`用于填充范围内的所需值。
+
+`start`不传则默认值`0`。
+
+`step`不传则默认值`1`。
+
+```js
+const initializeArrayWithRangeRight = (end, start = 0, step = 1) =>
+  Array.from({ length: Math.ceil((end + 1 - start) / step) }).map(
+    (v, i, arr) => (arr.length - i - 1) * step + start
+  );
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+initializeArrayWithRangeRight(5); // [5,4,3,2,1,0]
+initializeArrayWithRangeRight(7, 3); // [7,6,5,4,3]
+initializeArrayWithRangeRight(9, 0, 2); // [8,6,4,2,0]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### initializeArrayWithValues
+
+使用指定的值初始化并填充数组。
+
+使用`Array（n）`创建一个所需长度的数组，`fill（v）`用所需的值填充它。
+`val`不传则默认`0`。
+
+```js
+const initializeArrayWithValues = (n, val = 0) => Array(n).fill(val);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+initializeArrayWithValues(5, 2); // [2, 2, 2, 2, 2]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### initializeNDArray
+
+创建具有给定值的n维数组。
+
+使用递归。
+使用`Array.prototype.map()`生成行，其中每个行都是使用`initialize NDArray`初始化的新数组。
+
+```js
+const initializeNDArray = (val, ...args) =>
+  args.length === 0
+    ? val
+    : Array.from({ length: args[0] }).map(() => initializeNDArray(val, ...args.slice(1)));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+initializeNDArray(1, 3); // [1,1,1]
+initializeNDArray(5, 2, 2, 2); // [[[5,5],[5,5]],[[5,5],[5,5]]]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### intersection
+
+返回一个包含两个数组交集元素的数组。
+
+从`b`创建一个`Set`，然后在`a`上使用`Array.prototype.filter()`来保存`b`中包含的值。
+
+```js
+const intersection = (a, b) => {
+  const s = new Set(b);
+  return a.filter(x => s.has(x));
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+intersection([1, 2, 3], [4, 3, 2]); // [2, 3]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### intersectionBy
+
+将提供的函数应应用到两个数组的每个元素上，然后返回两个数组中都存在的元素列表
+
+通过将 `fn` 应用到`b`的所有元素来创建一个`Set`，然后在`a`上调用 `Array.prototype.filter()` 来只保留调用` fn` 后 `b` 中包含的元素。
+
+```js
+const intersectionBy = (a, b, fn) => {
+  const s = new Set(b.map(fn));
+  return a.filter(x => s.has(fn(x)));
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+intersectionBy([2.1, 1.2], [2.3, 3.4], Math.floor); // [2.1]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### intersectionWith
+
+使用提供的比较器函数返回两个数组中存在的元素列表。
+
+使用`Array.prototype.filter()`和`Array.prototype.findIndex()`结合提供的比较器来确定交叉值。
+
+```js
+const intersectionWith = (a, b, comp) => a.filter(x => b.findIndex(y => comp(x, y)) !== -1);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+intersectionWith([1, 1.2, 1.5, 3, 0], [1.9, 3, 0, 3.9], (a, b) => Math.round(a) === Math.round(b)); // [1.5, 3, 0]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+
 
