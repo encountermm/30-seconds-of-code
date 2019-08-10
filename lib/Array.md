@@ -1032,5 +1032,278 @@ intersectionWith([1, 1.2, 1.5, 3, 0], [1.9, 3, 0, 3.9], (a, b) => Math.round(a) 
 
 <br>[⬆ 返回顶部](#contents)
 
+<!-- 2019年8月10日 22:51:40 -->
+### isSorted
+
+如果数组按升序排序，则返回“1”;如果按降序排序，则返回“-1”;如果未排序，则返回“0”。
+
+计算前两个元素的排序`方向`。
+使用`Object.entries()`循环遍历数组对象并成对比较它们。
+如果`direction`改变则返回`0`或如果到达最后一个元素则返回`direction`。
+
+```js
+const isSorted = arr => {
+  let direction = -(arr[0] - arr[1]);
+  for (let [i, val] of arr.entries()) {
+    direction = !direction ? -(arr[i - 1] - arr[i]) : direction;
+    if (i === arr.length - 1) return !direction ? 0 : direction;
+    else if ((val - arr[i + 1]) * direction > 0) return 0;
+  }
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+isSorted([0, 1, 2, 2]); // 1
+isSorted([4, 3, 2]); // -1
+isSorted([4, 3, 5]); // 0
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### join
+
+将数组的所有元素连接成一个字符串并返回该字符串。
+使用分隔符和结束分隔符。
+
+使用`Array.prototype.reduce()`将元素组合成一个字符串。
+省略第二个参数`separator`，使用`'，'`的默认分隔符。
+省略第三个参数`end`，默认使用与`separator`相同的值。
+
+```js
+const join = (arr, separator = ',', end = separator) =>
+  arr.reduce(
+    (acc, val, i) =>
+      i === arr.length - 2
+        ? acc + val + end
+        : i === arr.length - 1
+          ? acc + val
+          : acc + val + separator,
+    ''
+  );
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+join(['pen', 'pineapple', 'apple', 'pen'], ',', '&'); // "pen,pineapple,apple&pen"
+join(['pen', 'pineapple', 'apple', 'pen'], ','); // "pen,pineapple,apple,pen"
+join(['pen', 'pineapple', 'apple', 'pen']); // "pen,pineapple,apple,pen"
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### JSONtoCSV ![advanced](/advanced.svg)
+
+将对象数组转换为逗号分隔值（CSV）字符串，该字符串仅包含指定的`columns`。
+
+使用`Array.prototype.join（delimiter）`组合`columns`中的所有名称来创建第一行。
+使用`Array.prototype.map()`和`Array.prototype.reduce()`为每个对象创建一个行，用空字符串替换不存在的值，只用`columns`映射值。
+使用`Array.prototype.join（'\ n'）`将所有行组合成一个字符串。
+省略第三个参数`delimiter`，使用`，`的默认分隔符。
+
+```js
+const JSONtoCSV = (arr, columns, delimiter = ',') =>
+  [
+    columns.join(delimiter),
+    ...arr.map(obj =>
+      columns.reduce(
+        (acc, key) => `${acc}${!acc.length ? '' : delimiter}"${!obj[key] ? '' : obj[key]}"`,
+        ''
+      )
+    )
+  ].join('\n');
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+JSONtoCSV([{ a: 1, b: 2 }, { a: 3, b: 4, c: 5 }, { a: 6 }, { b: 7 }], ['a', 'b']); // 'a,b\n"1","2"\n"3","4"\n"6",""\n"","7"'
+JSONtoCSV([{ a: 1, b: 2 }, { a: 3, b: 4, c: 5 }, { a: 6 }, { b: 7 }], ['a', 'b'], ';'); // 'a;b\n"1";"2"\n"3";"4"\n"6";""\n"";"7"'
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### last
+
+返回数组中的最后一个元素。
+
+使用`arr.length  -  1`计算给定数组的最后一个元素的索引并返回它。
+
+```js
+const last = arr => arr[arr.length - 1];
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+last([1, 2, 3]); // 3
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### longestItem
+
+获取具有`length`属性的任意数量的可迭代对象或对象，并返回最长的对象或对象。
+如果多个对象具有相同的长度，则将返回第一个对象。
+如果没有提供参数，则返回`undefined`。
+
+使用`Array.prototype.reduce()`，比较对象的`length`以找到最长的对象。
+
+```js
+const longestItem = (...vals) => vals.reduce((a, x) => (x.length > a.length ? x : a));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+longestItem('this', 'is', 'a', 'testcase'); // 'testcase'
+longestItem(...['a', 'ab', 'abc']); // 'abc'
+longestItem(...['a', 'ab', 'abc'], 'abcd'); // 'abcd'
+longestItem([1, 2, 3], [1, 2], [1, 2, 3, 4, 5]); // [1, 2, 3, 4, 5]
+longestItem([1, 2, 3], 'foobar'); // 'foobar'
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### mapObject ![advanced](/advanced.svg)
+
+使用函数将数组的值映射到对象，其中键值对由作为键的字符串化值和映射值组成。
+
+使用匿名内部函数作用域来声明未定义的内存空间，使用闭包来存储返回值。 使用一个新的`Array`来存储数组，其中包含函数的数据集，并使用逗号运算符返回第二步，而无需从一个上下文移动到另一个上下文（由于闭包和操作顺序）。
+
+```js
+const mapObject = (arr, fn) =>
+  (a => (
+    (a = [arr, arr.map(fn)]), a[0].reduce((acc, val, ind) => ((acc[val] = a[1][ind]), acc), {})
+  ))();
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+const squareIt = arr => mapObject(arr, a => a * a);
+squareIt([1, 2, 3]); // { 1: 1, 2: 4, 3: 9 }
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### maxN
+返回提供的数组中的`n`最大元素。
+如果`n`大于或等于提供的数组长度，则返回原始数组（按降序排序）。
+
+使用`Array.prototype.sort()`结合扩展运算符（`...`）来创建数组的浅层克隆并按降序排序。
+使用`Array.prototype.slice()`来获取指定数量的元素。
+省略第二个参数`n`，得到一个单元素数组。
+
+```js
+const maxN = (arr, n = 1) => [...arr].sort((a, b) => b - a).slice(0, n);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+maxN([1, 2, 3]); // [3]
+maxN([1, 2, 3], 2); // [3,2]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### minN
+
+从提供的数组中返回`n`最小元素。
+如果`n`大于或等于提供的数组长度，则返回原始数组（按升序排序）。
+
+使用`Array.prototype.sort()`结合扩展运算符（`...`）来创建数组的浅层克隆并按升序对其进行排序。
+使用`Array.prototype.slice()`来获取指定数量的元素。
+省略第二个参数`n`，得到一个单元素数组。
+
+```js
+const minN = (arr, n = 1) => [...arr].sort((a, b) => a - b).slice(0, n);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+minN([1, 2, 3]); // [1]
+minN([1, 2, 3], 2); // [1,2]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### none
+
+如果对集合中所有的元素执行判定函数全部都返回`false`，则返回`true`，否则返回`false`。
+
+使用`Array.prototype.some()`来测试集合中的任何元素是否基于`fn`返回`true`。
+省略第二个参数`fn`，使用`Boolean`作为默认值。
+
+```js
+const none = (arr, fn = Boolean) => !arr.some(fn);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+none([0, 1, 3, 0], x => x == 2); // true
+none([0, 0, 0]); // true
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### nthElement
+
+返回数组的第n个元素。
+
+使用`Array.prototype.slice()`来获取包含第一个元素的第n个元素的数组。
+如果索引超出范围，则返回“undefined”。
+省略第二个参数`n`，得到数组的第一个元素。
+
+```js
+const nthElement = (arr, n = 0) => (n === -1 ? arr.slice(n) : arr.slice(n, n + 1))[0];
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+nthElement(['a', 'b', 'c'], 1); // 'b'
+nthElement(['a', 'b', 'b'], -3); // 'a'
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+
+
 
 
