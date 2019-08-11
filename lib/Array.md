@@ -1303,6 +1303,311 @@ nthElement(['a', 'b', 'b'], -3); // 'a'
 
 <br>[⬆ 返回顶部](#contents)
 
+<!-- 2019年8月11日 23:24:17 -->
+### offset
+
+将指定数量的元素移动到数组的末尾。
+
+两次使用`Array.prototype.slice()`来获取指定索引之后的元素以及之前的元素。
+使用扩展运算符（`...`）将两者合并为一个数组。
+如果`offset`为负数，则元素将从end移动到start。
+
+```js
+const offset = (arr, offset) => [...arr.slice(offset), ...arr.slice(0, offset)];
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+offset([1, 2, 3, 4, 5], 2); // [3, 4, 5, 1, 2]
+offset([1, 2, 3, 4, 5], -2); // [4, 5, 1, 2, 3]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### partition
+
+将元素分组为两个数组，具体取决于所提供的函数作用域每个元素的返回的`Boolean`。
+
+使用`Array.prototype.reduce()`创建一个包含两个数组的数组。
+使用`Array.prototype.push()`将`fn`返回'true`的元素添加到第一个数组，将`fn`返回`false`的元素添加到第二个数组。
+
+```js
+const partition = (arr, fn) =>
+  arr.reduce(
+    (acc, val, i, arr) => {
+      acc[fn(val, i, arr) ? 0 : 1].push(val);
+      return acc;
+    },
+    [[], []]
+  );
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+const users = [{ user: 'barney', age: 36, active: false }, { user: 'fred', age: 40, active: true }];
+partition(users, o => o.active); // [[{ 'user': 'fred',    'age': 40, 'active': true }],[{ 'user': 'barney',  'age': 36, 'active': false }]]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### permutations ![advanced](/advanced.svg)
+
+⚠️ **WARNING**: 此函数的执行时间随每个数组元素呈指数增长。 超过8到10个条目的任何内容都会导致浏览器挂起，因为它会尝试解决所有不同的组合。
+
+生成数组元素的所有排列（包含重复项）。
+
+使用递归。
+对于给定数组中的每个元素，为其余元素创建所有部分排列。
+使用`Array.prototype.map()`将元素与每个部分排列组合，然后使用`Array.prototype.reduce()`来组合一个数组中的所有排列。
+基本情况是数组`length`等于'2`或`1`。
+
+```js
+const permutations = arr => {
+  if (arr.length <= 2) return arr.length === 2 ? [arr, [arr[1], arr[0]]] : arr;
+  return arr.reduce(
+    (acc, item, i) =>
+      acc.concat(
+        permutations([...arr.slice(0, i), ...arr.slice(i + 1)]).map(val => [item, ...val])
+      ),
+    []
+  );
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+permutations([1, 33, 5]); // [ [ 1, 33, 5 ], [ 1, 5, 33 ], [ 33, 1, 5 ], [ 33, 5, 1 ], [ 5, 1, 33 ], [ 5, 33, 1 ] ]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### pull
+
+过滤掉指定的值来改变原始数组。
+
+使用`Array.prototype.filter()`和`Array.prototype.includes()`来提取不需要的值。
+使用`Array.prototype.length = 0`来改变传入的数组，方法是将它的长度重置为零，并使用`Array.prototype.push()`重新填充它，只使用过滤剩余的值。
+
+_（对于不改变原始数组的片段，请参见[`without`](＃without)）_
+```js
+const pull = (arr, ...args) => {
+  let argState = Array.isArray(args[0]) ? args[0] : args;
+  let pulled = arr.filter((v, i) => !argState.includes(v));
+  arr.length = 0;
+  pulled.forEach(v => arr.push(v));
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+let myArray = ['a', 'b', 'c', 'a', 'b', 'c'];
+pull(myArray, 'a', 'c'); // myArray = [ 'b', 'b' ]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### pullAtIndex ![advanced](/advanced.svg)
+
+过滤掉指定索引处的值来改变原数组。
+
+使用`Array.prototype.filter()`和`Array.prototype.includes()`来提取不需要的值。
+使用`Array.prototype.length = 0`来改变传入的数组，方法是将它的长度重置为零，并使用`Array.prototype.push()`重新填充它，只使用过滤后的值。
+返回一个过滤的值组成的数组。
+
+```js
+const pullAtIndex = (arr, pullArr) => {
+  let removed = [];
+  let pulled = arr
+    .map((v, i) => (pullArr.includes(i) ? removed.push(v) : v))
+    .filter((v, i) => !pullArr.includes(i));
+  arr.length = 0;
+  pulled.forEach(v => arr.push(v));
+  return removed;
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+let myArray = ['a', 'b', 'c', 'd'];
+let pulled = pullAtIndex(myArray, [1, 3]); // myArray = [ 'a', 'c' ] , pulled = [ 'b', 'd' ]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### pullAtValue ![advanced](/advanced.svg)
+改变原始数组以过滤掉指定的值。 返回已删除的元素。
+
+使用`Array.prototype.filter()`和`Array.prototype.includes()`来提取不需要的值。
+使用`Array.prototype.length = 0`来改变传入的数组，方法是将它的长度重置为零，并使用`Array.prototype.push()`重新填充它，只使用过滤后的值。
+
+```js
+const pullAtValue = (arr, pullArr) => {
+  let removed = [],
+    pushToRemove = arr.forEach((v, i) => (pullArr.includes(v) ? removed.push(v) : v)),
+    mutateTo = arr.filter((v, i) => !pullArr.includes(v));
+  arr.length = 0;
+  mutateTo.forEach(v => arr.push(v));
+  return removed;
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+let myArray = ['a', 'b', 'c', 'd'];
+let pulled = pullAtValue(myArray, ['b', 'd']); // myArray = [ 'a', 'c' ] , pulled = [ 'b', 'd' ]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### pullBy ![advanced](/advanced.svg)
+根据给定的迭代器函数，对原始数组进行变换以过滤掉指定的值。
+
+检查函数中是否提供了最后一个参数。
+使用`Array.prototype.map()`将迭代器函数`fn`应用于所有数组元素。
+使用`Array.prototype.filter()`和`Array.prototype.includes()`来提取不需要的值。
+使用`Array.prototype.length = 0`来改变传入的数组，方法是将它的长度重置为零，并使用`Array.prototype.push()`重新填充它，只使用过滤后的值。
+
+```js
+const pullBy = (arr, ...args) => {
+  const length = args.length;
+  let fn = length > 1 ? args[length - 1] : undefined;
+  fn = typeof fn == 'function' ? (args.pop(), fn) : undefined;
+  let argState = (Array.isArray(args[0]) ? args[0] : args).map(val => fn(val));
+  let pulled = arr.filter((v, i) => !argState.includes(fn(v)));
+  arr.length = 0;
+  pulled.forEach(v => arr.push(v));
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+var myArray = [{ x: 1 }, { x: 2 }, { x: 3 }, { x: 1 }];
+pullBy(myArray, [{ x: 1 }, { x: 3 }], o => o.x); // myArray = [{ x: 2 }]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### reducedFilter
+
+根据条件过滤对象数组，同时过滤掉未指定的键。
+
+使用`Array.prototype.filter()`根据谓词`fn`过滤数组，以便返回条件返回truthy值的对象。
+在过滤的数组上，使用`Array.prototype.map()`使用`Array.prototype.reduce()`返回新对象，以过滤掉未作为`keys`参数提供的键。
+
+```js
+const reducedFilter = (data, keys, fn) =>
+  data.filter(fn).map(el =>
+    keys.reduce((acc, key) => {
+      acc[key] = el[key];
+      return acc;
+    }, {})
+  );
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+const data = [
+  {
+    id: 1,
+    name: 'john',
+    age: 24
+  },
+  {
+    id: 2,
+    name: 'mike',
+    age: 50
+  }
+];
+
+reducedFilter(data, ['id', 'name'], item => item.age > 24); // [{ id: 2, name: 'mike'}]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### reduceSuccessive
+
+对累加器和数组中的每个元素（从左到右）应用函数，返回连续减少的值的数组。
+
+使用`Array.prototype.reduce()`将给定函数应用于给定数组，存储每个新结果。
+
+```js
+const reduceSuccessive = (arr, fn, acc) =>
+  arr.reduce((res, val, i, arr) => (res.push(fn(res.slice(-1)[0], val, i, arr)), res), [acc]);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+reduceSuccessive([1, 2, 3, 4, 5, 6], (acc, val) => acc + val, 0); // [0, 1, 3, 6, 10, 15, 21]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### reduceWhich
+
+在应用提供的函数设置比较规则后，返回数组的最小/最大值。
+
+将`Array.prototype.reduce()`与`comparator`函数结合使用，可以得到数组中的相应元素。
+您可以省略第二个参数`comparator`，以使用返回数组中最小元素的默认参数。
+
+```js
+const reduceWhich = (arr, comparator = (a, b) => a - b) =>
+  arr.reduce((a, b) => (comparator(a, b) >= 0 ? b : a));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+reduceWhich([1, 3, 2]); // 1
+reduceWhich([1, 3, 2], (a, b) => b - a); // 3
+reduceWhich(
+  [{ name: 'Tom', age: 12 }, { name: 'Jack', age: 18 }, { name: 'Lucy', age: 9 }],
+  (a, b) => a.age - b.age
+); // {name: "Lucy", age: 9}
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+
+
 
 
 
