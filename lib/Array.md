@@ -1606,6 +1606,270 @@ reduceWhich(
 
 <br>[⬆ 返回顶部](#contents)
 
+<!-- 2019年8月12日 21:44:18 -->
+### reject
+
+传入断言函数和数组，使用`Array.prototype.filter()`,如果`pred(x) === false`则保留`x`。
+
+```js
+const reject = (pred, array) => array.filter((...args) => !pred(...args));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+reject(x => x % 2 === 0, [1, 2, 3, 4, 5]); // [1, 3, 5]
+reject(word => word.length > 4, ['Apple', 'Pear', 'Kiwi', 'Banana']); // ['Pear', 'Kiwi']
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### remove
+
+Removes elements from an array for which the given function returns `false`.
+
+Use `Array.prototype.filter()` to find array elements that return truthy values and `Array.prototype.reduce()` to remove elements using `Array.prototype.splice()`.
+The `func` is invoked with three arguments (`value, index, array`).
+
+从数组中移除给定函数返回false的元素. 使用`Array.filter()`查找返回 `truthy` 值的数组元素和`Array.reduce()`以使用`Array.splice()`删除元素。使用三参数 `func(value, index, array)`调用函数.。
+
+```js
+const remove = (arr, func) =>
+  Array.isArray(arr)
+    ? arr.filter(func).reduce((acc, val) => {
+      arr.splice(arr.indexOf(val), 1);
+      return acc.concat(val);
+    }, [])
+    : [];
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+remove([1, 2, 3, 4], n => n % 2 === 0); // [2, 4]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### sample
+
+从数组中返回一个随机元素。
+
+使用`Math.random()`生成一个随机数，乘以`length`并使用`Math.floor()`将其四舍五入到最接近的整数。
+此方法也适用于字符串。
+
+```js
+const sample = arr => arr[Math.floor(Math.random() * arr.length)];
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+sample([3, 7, 9, 11]); // 9
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### sampleSize
+从`array`获取唯一键的`n`随机元素，最大为`array`的`length`。
+
+使用[Fisher-Yates算法](https://github.com/30-seconds/30-seconds-of-code#shuffle)对阵列进行混洗。
+使用`Array.prototype.slice()`来获取第一个`n`元素。
+省略第二个参数，`n`从数组中只获取一个随机元素。
+
+```js
+const sampleSize = ([...arr], n = 1) => {
+  let m = arr.length;
+  while (m) {
+    const i = Math.floor(Math.random() * m--);
+    [arr[m], arr[i]] = [arr[i], arr[m]];
+  }
+  return arr.slice(0, n);
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+sampleSize([1, 2, 3], 2); // [3,1]
+sampleSize([1, 2, 3], 4); // [2,3,1]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### shank
+具有与[`Array.prototype.splice()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splic)相同的功能，但返回一个新的 数组而不是改变原始数组。
+
+在删除现有元素和/或添加新元素后，使用`Array.prototype.slice（）`和`Array.prototype.concat（）`获取包含新内容的新数组。
+省略第二个参数`index`，从'0'开始。
+省略第三个参数`delCount`，删除`0`元素。
+省略第四个参数`elements`，以便不添加任何新元素。
+
+```js
+const shank = (arr, index = 0, delCount = 0, ...elements) =>
+  arr
+    .slice(0, index)
+    .concat(elements)
+    .concat(arr.slice(index + delCount));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+const names = ['alpha', 'bravo', 'charlie'];
+const namesAndDelta = shank(names, 1, 0, 'delta'); // [ 'alpha', 'delta', 'bravo', 'charlie' ]
+const namesNoBravo = shank(names, 1, 1); // [ 'alpha', 'charlie' ]
+console.log(names); // ['alpha', 'bravo', 'charlie']
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### shuffle
+
+随机化数组值的顺序，返回一个新数组。
+
+使用[Fisher-Yates算法](https://github.com/30-seconds/30-seconds-of-code#shuffle)重新排序数组的元素。
+
+```js
+const shuffle = ([...arr]) => {
+  let m = arr.length;
+  while (m) {
+    const i = Math.floor(Math.random() * m--);
+    [arr[m], arr[i]] = [arr[i], arr[m]];
+  }
+  return arr;
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+const foo = [1, 2, 3];
+shuffle(foo); // [2, 3, 1], foo = [1, 2, 3]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### similarity
+
+返回两个数组中出现的相同元素的数组，也可以说是两个数组的交集。
+
+使用`Array.prototype.filter（）`删除不属于`values`的值，使用`Array.prototype.includes（）`确定。
+
+```js
+const similarity = (arr, values) => arr.filter(v => values.includes(v));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+similarity([1, 2, 3], [1, 2, 4]); // [1, 2]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### sortedIndex
+
+返回应将值插入数组的最低索引，以便维护其排序顺序。
+
+检查数组是否按降序排序（松散）。
+使用`Array.prototype.findIndex（）`来查找应该插入元素的适当索引。
+
+```js
+const sortedIndex = (arr, n) => {
+  const isDescending = arr[0] > arr[arr.length - 1];
+  const index = arr.findIndex(el => (isDescending ? n >= el : n <= el));
+  return index === -1 ? arr.length : index;
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+sortedIndex([5, 3, 2, 1], 4); // 1
+sortedIndex([30, 50], 40); // 1
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### sortedIndexBy
+
+返回应将值插入数组的最低索引，以便根据提供的迭代器函数维护其排序顺序。
+
+检查数组是否按降序排序（松散）。
+使用`Array.prototype.findIndex（）`根据迭代器函数`fn`找到应该插入元素的适当索引。
+
+```js
+const sortedIndexBy = (arr, n, fn) => {
+  const isDescending = fn(arr[0]) > fn(arr[arr.length - 1]);
+  const val = fn(n);
+  const index = arr.findIndex(el => (isDescending ? val >= fn(el) : val <= fn(el)));
+  return index === -1 ? arr.length : index;
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+sortedIndexBy([{ x: 4 }, { x: 5 }], { x: 4 }, o => o.x); // 0
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### sortedLastIndex
+
+返回应将值插入数组的最高索引，以便维护其排序顺序。
+
+检查数组是否按降序排序（松散）。
+使用`Array.prototype.reverse（）`和`Array.prototype.findIndex（）`来查找应该插入元素的最后一个索引。
+
+```js
+const sortedLastIndex = (arr, n) => {
+  const isDescending = arr[0] > arr[arr.length - 1];
+  const index = arr.reverse().findIndex(el => (isDescending ? n <= el : n >= el));
+  return index === -1 ? 0 : arr.length - index;
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+sortedLastIndex([10, 20, 30, 30, 40], 30); // 4
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+
 
 
 
