@@ -1869,6 +1869,259 @@ sortedLastIndex([10, 20, 30, 30, 40], 30); // 4
 
 <br>[⬆ 返回顶部](#contents)
 
+<!-- 2019年8月13日 21:49:44 -->
+### sortedLastIndexBy
+
+Returns the highest index at which value should be inserted into array in order to maintain its sort order, based on a provided iterator function.
+
+Check if the array is sorted in descending order (loosely).
+Use `Array.prototype.map()` to apply the iterator function to all elements of the array.
+Use `Array.prototype.reverse()` and `Array.prototype.findIndex()` to find the appropriate last index where the element should be inserted, based on the provided iterator function.
+
+```js
+const sortedLastIndexBy = (arr, n, fn) => {
+  const isDescending = fn(arr[0]) > fn(arr[arr.length - 1]);
+  const val = fn(n);
+  const index = arr
+    .map(fn)
+    .reverse()
+    .findIndex(el => (isDescending ? val <= el : val >= el));
+  return index === -1 ? 0 : arr.length - index;
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+sortedLastIndexBy([{ x: 4 }, { x: 5 }], { x: 4 }, o => o.x); // 1
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### stableSort ![advanced](/advanced.svg)
+
+对数组执行稳定排序，在值相同时保留项的初始索引。
+不改变原始数组，而是返回一个新数组。
+
+使用`Array.prototype.map（）`将输入数组的每个元素与其对应的索引配对。
+使用`Array.prototype.sort（）`和`compare`函数对列表进行排序，如果比较的元素相等，则保留它们的初始顺序。
+使用`Array.prototype.map（）`转换回初始数组项。
+
+```js
+const stableSort = (arr, compare) =>
+  arr
+    .map((item, index) => ({ item, index }))
+    .sort((a, b) => compare(a.item, b.item) || a.index - b.index)
+    .map(({ item }) => item);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const stable = stableSort(arr, () => 0); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### symmetricDifference
+
+返回两个数组之间的对称差异，而不过滤掉重复的值。
+
+从每个数组创建一个`Set`，然后在每个数组上使用`Array.prototype.filter（）`只保留另一个不包含的值。
+
+```js
+const symmetricDifference = (a, b) => {
+  const sA = new Set(a),
+    sB = new Set(b);
+  return [...a.filter(x => !sB.has(x)), ...b.filter(x => !sA.has(x))];
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+symmetricDifference([1, 2, 3], [1, 2, 4]); // [3, 4]
+symmetricDifference([1, 2, 2], [1, 3, 1]); // [2, 2, 3]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### symmetricDifferenceBy
+
+将提供的函数应用于两个数组的每个数组元素后，返回两个数组之间的对称差异。
+
+通过将`fn`应用于每个数组的元素来创建一个`Set`，然后在每个数组的元素上使用`Array.prototype.filter（）`来保留不包含在另一个数组中的值。
+
+```js
+const symmetricDifferenceBy = (a, b, fn) => {
+  const sA = new Set(a.map(v => fn(v))),
+    sB = new Set(b.map(v => fn(v)));
+  return [...a.filter(x => !sB.has(fn(x))), ...b.filter(x => !sA.has(fn(x)))];
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+symmetricDifferenceBy([2.1, 1.2], [2.3, 3.4], Math.floor); // [ 1.2, 3.4 ]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### symmetricDifferenceWith
+
+使用提供的函数作为比较器返回两个数组之间的对称差异。
+
+使用`Array.prototype.filter（）`和`Array.prototype.findIndex（）`来查找适当的值。
+
+```js
+const symmetricDifferenceWith = (arr, val, comp) => [
+  ...arr.filter(a => val.findIndex(b => comp(a, b)) === -1),
+  ...val.filter(a => arr.findIndex(b => comp(a, b)) === -1)
+];
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+symmetricDifferenceWith(
+  [1, 1.2, 1.5, 3, 0],
+  [1.9, 3, 0, 3.9],
+  (a, b) => Math.round(a) === Math.round(b)
+); // [1, 1.2, 3.9]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### tail
+
+返回数组中除第一个元素之外的所有元素。
+
+如果数组的`length`大于`1`，则返回`Array.prototype.slice（1）`，否则返回整个数组。
+
+```js
+const tail = arr => (arr.length > 1 ? arr.slice(1) : arr);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+tail([1, 2, 3]); // [2,3]
+tail([1]); // [1]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### take
+
+返回一个从开头删除n个元素的数组。
+
+使用`Array.prototype.slice（）`创建一个数组切片，从头开始采用`n`个元素。
+
+```js
+const take = (arr, n = 1) => arr.slice(0, n);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+take([1, 2, 3], 5); // [1, 2, 3]
+take([1, 2, 3], 0); // []
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### takeRight
+
+返回从末尾开始删除n个元素的数组。
+
+使用`Array.prototype.slice（）`创建一个数组切片，从末尾取出`n`个元素。
+
+```js
+const takeRight = (arr, n = 1) => arr.slice(arr.length - n, arr.length);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+takeRight([1, 2, 3], 2); // [ 2, 3 ]
+takeRight([1, 2, 3]); // [3]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### takeRightWhile
+
+从数组末尾删除元素，直到传递的函数返回`true`。 返回删除的元素。
+
+循环遍历数组，使用`Array.prototype.reduceRight（）`并累积元素，同时函数返回falsy值。
+
+```js
+const takeRightWhile = (arr, func) =>
+  arr.reduceRight((acc, el) => (func(el) ? acc : [el, ...acc]), []);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+takeRightWhile([1, 2, 3, 4], n => n < 3); // [3, 4]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### takeWhile
+
+删除数组中的元素，直到传递的函数返回`true`。 返回已删除的元素。
+
+循环遍历数组，使用`for ... of`循环遍历`Array.prototype.entries（）`，直到函数的返回值为`true`。
+使用`Array.prototype.slice（）`返回删除的元素。
+
+```js
+const takeWhile = (arr, func) => {
+  for (const [i, val] of arr.entries()) if (func(val)) return arr.slice(0, i);
+  return arr;
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+takeWhile([1, 2, 3, 4], n => n >= 3); // [1, 2]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
 
 
 
