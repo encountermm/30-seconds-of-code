@@ -1712,7 +1712,7 @@ sampleSize([1, 2, 3], 4); // [2,3,1]
 ### shank
 具有与[`Array.prototype.splice()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splic)相同的功能，但返回一个新的 数组而不是改变原始数组。
 
-在删除现有元素和/或添加新元素后，使用`Array.prototype.slice（）`和`Array.prototype.concat（）`获取包含新内容的新数组。
+在删除现有元素和/或添加新元素后，使用`Array.prototype.slice()`和`Array.prototype.concat()`获取包含新内容的新数组。
 省略第二个参数`index`，从'0'开始。
 省略第三个参数`delCount`，删除`0`元素。
 省略第四个参数`elements`，以便不添加任何新元素。
@@ -1772,7 +1772,7 @@ shuffle(foo); // [2, 3, 1], foo = [1, 2, 3]
 
 返回两个数组中出现的相同元素的数组，也可以说是两个数组的交集。
 
-使用`Array.prototype.filter（）`删除不属于`values`的值，使用`Array.prototype.includes（）`确定。
+使用`Array.prototype.filter()`删除不属于`values`的值，使用`Array.prototype.includes()`确定。
 
 ```js
 const similarity = (arr, values) => arr.filter(v => values.includes(v));
@@ -1794,7 +1794,7 @@ similarity([1, 2, 3], [1, 2, 4]); // [1, 2]
 返回应将值插入数组的最低索引，以便维护其排序顺序。
 
 检查数组是否按降序排序（松散）。
-使用`Array.prototype.findIndex（）`来查找应该插入元素的适当索引。
+使用`Array.prototype.findIndex()`来查找应该插入元素的适当索引。
 
 ```js
 const sortedIndex = (arr, n) => {
@@ -1821,7 +1821,7 @@ sortedIndex([30, 50], 40); // 1
 返回应将值插入数组的最低索引，以便根据提供的迭代器函数维护其排序顺序。
 
 检查数组是否按降序排序（松散）。
-使用`Array.prototype.findIndex（）`根据迭代器函数`fn`找到应该插入元素的适当索引。
+使用`Array.prototype.findIndex()`根据迭代器函数`fn`找到应该插入元素的适当索引。
 
 ```js
 const sortedIndexBy = (arr, n, fn) => {
@@ -1848,7 +1848,7 @@ sortedIndexBy([{ x: 4 }, { x: 5 }], { x: 4 }, o => o.x); // 0
 返回应将值插入数组的最高索引，以便维护其排序顺序。
 
 检查数组是否按降序排序（松散）。
-使用`Array.prototype.reverse（）`和`Array.prototype.findIndex（）`来查找应该插入元素的最后一个索引。
+使用`Array.prototype.reverse()`和`Array.prototype.findIndex()`来查找应该插入元素的最后一个索引。
 
 ```js
 const sortedLastIndex = (arr, n) => {
@@ -1906,9 +1906,9 @@ sortedLastIndexBy([{ x: 4 }, { x: 5 }], { x: 4 }, o => o.x); // 1
 对数组执行稳定排序，在值相同时保留项的初始索引。
 不改变原始数组，而是返回一个新数组。
 
-使用`Array.prototype.map（）`将输入数组的每个元素与其对应的索引配对。
-使用`Array.prototype.sort（）`和`compare`函数对列表进行排序，如果比较的元素相等，则保留它们的初始顺序。
-使用`Array.prototype.map（）`转换回初始数组项。
+使用`Array.prototype.map()`将输入数组的每个元素与其对应的索引配对。
+使用`Array.prototype.sort()`和`compare`函数对列表进行排序，如果比较的元素相等，则保留它们的初始顺序。
+使用`Array.prototype.map()`转换回初始数组项。
 
 ```js
 const stableSort = (arr, compare) =>
@@ -1934,7 +1934,7 @@ const stable = stableSort(arr, () => 0); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 返回两个数组之间的对称差异，而不过滤掉重复的值。
 
-从每个数组创建一个`Set`，然后在每个数组上使用`Array.prototype.filter（）`只保留另一个不包含的值。
+从每个数组创建一个`Set`，然后在每个数组上使用`Array.prototype.filter()`只保留另一个不包含的值。
 
 ```js
 const symmetricDifference = (a, b) => {
@@ -1960,7 +1960,7 @@ symmetricDifference([1, 2, 2], [1, 3, 1]); // [2, 2, 3]
 
 将提供的函数应用于两个数组的每个数组元素后，返回两个数组之间的对称差异。
 
-通过将`fn`应用于每个数组的元素来创建一个`Set`，然后在每个数组的元素上使用`Array.prototype.filter（）`来保留不包含在另一个数组中的值。
+通过将`fn`应用于每个数组的元素来创建一个`Set`，然后在每个数组的元素上使用`Array.prototype.filter()`来保留不包含在另一个数组中的值。
 
 ```js
 const symmetricDifferenceBy = (a, b, fn) => {
@@ -1985,7 +1985,7 @@ symmetricDifferenceBy([2.1, 1.2], [2.3, 3.4], Math.floor); // [ 1.2, 3.4 ]
 
 使用提供的函数作为比较器返回两个数组之间的对称差异。
 
-使用`Array.prototype.filter（）`和`Array.prototype.findIndex（）`来查找适当的值。
+使用`Array.prototype.filter()`和`Array.prototype.findIndex()`来查找适当的值。
 
 ```js
 const symmetricDifferenceWith = (arr, val, comp) => [
@@ -2035,7 +2035,7 @@ tail([1]); // [1]
 
 返回一个从开头删除n个元素的数组。
 
-使用`Array.prototype.slice（）`创建一个数组切片，从头开始采用`n`个元素。
+使用`Array.prototype.slice()`创建一个数组切片，从头开始采用`n`个元素。
 
 ```js
 const take = (arr, n = 1) => arr.slice(0, n);
@@ -2057,7 +2057,7 @@ take([1, 2, 3], 0); // []
 
 返回从末尾开始删除n个元素的数组。
 
-使用`Array.prototype.slice（）`创建一个数组切片，从末尾取出`n`个元素。
+使用`Array.prototype.slice()`创建一个数组切片，从末尾取出`n`个元素。
 
 ```js
 const takeRight = (arr, n = 1) => arr.slice(arr.length - n, arr.length);
@@ -2079,7 +2079,7 @@ takeRight([1, 2, 3]); // [3]
 
 从数组末尾删除元素，直到传递的函数返回`true`。 返回删除的元素。
 
-循环遍历数组，使用`Array.prototype.reduceRight（）`并累积元素，同时函数返回falsy值。
+循环遍历数组，使用`Array.prototype.reduceRight()`并累积元素，同时函数返回falsy值。
 
 ```js
 const takeRightWhile = (arr, func) =>
@@ -2101,8 +2101,8 @@ takeRightWhile([1, 2, 3, 4], n => n < 3); // [3, 4]
 
 删除数组中的元素，直到传递的函数返回`true`。 返回已删除的元素。
 
-循环遍历数组，使用`for ... of`循环遍历`Array.prototype.entries（）`，直到函数的返回值为`true`。
-使用`Array.prototype.slice（）`返回删除的元素。
+循环遍历数组，使用`for ... of`循环遍历`Array.prototype.entries()`，直到函数的返回值为`true`。
+使用`Array.prototype.slice()`返回删除的元素。
 
 ```js
 const takeWhile = (arr, func) => {
@@ -2121,6 +2121,292 @@ takeWhile([1, 2, 3, 4], n => n >= 3); // [1, 2]
 </details>
 
 <br>[⬆ 返回顶部](#contents)
+
+
+<!-- 2019年8月14日 16:40:16 -->
+### toHash
+
+将给定的`Array`减少为值哈希（键控数据存储）。
+
+给定一个`Iterable`或类似`Array`的结构，在提供的对象上调用`Array.prototype.reduce.call()`来跳过它并返回一个Object，由参考值键入。
+
+```js
+const toHash = (object, key) =>
+  Array.prototype.reduce.call(
+    object,
+    (acc, data, index) => ((acc[!key ? index : data[key]] = data), acc),
+    {}
+  );
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+toHash([4, 3, 2, 1]); // { 0: 4, 1: 3, 2: 2, 3: 1 }
+toHash([{ a: 'label' }], 'a'); // { label: { a: 'label' } }
+// A more in depth example:
+let users = [{ id: 1, first: 'Jon' }, { id: 2, first: 'Joe' }, { id: 3, first: 'Moe' }];
+let managers = [{ manager: 1, employees: [2, 3] }];
+// We use function here because we want a bindable reference, but a closure referencing the hash would work, too.
+managers.forEach(
+  manager =>
+    (manager.employees = manager.employees.map(function(id) {
+      return this[id];
+    }, toHash(users, 'id')))
+);
+managers; // [ { manager:1, employees: [ { id: 2, first: "Joe" }, { id: 3, first: "Moe" } ] } ]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### union
+
+返回两个数组的并集。
+
+使用`a`和`b`的所有值创建一个`Set`并转换为数组。
+
+```js
+const union = (a, b) => Array.from(new Set([...a, ...b]));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+union([1, 2, 3], [4, 3, 2]); // [1,2,3,4]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### unionBy
+
+在将提供的函数应用于两者的每个数组元素之后，返回两个数组的并集。
+
+通过将所有`fn`应用于`a`的所有值来创建`Set`。
+从`a`创建一个`Set`和'b`中的所有元素，其值在应用`fn`后与先前创建的集合中的值不匹配。
+返回转换为数组的最后一组。
+
+```js
+const unionBy = (a, b, fn) => {
+  const s = new Set(a.map(fn));
+  return Array.from(new Set([...a, ...b.filter(x => !s.has(fn(x)))]));
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+unionBy([2.1], [1.2, 2.3], Math.floor); // [2.1, 1.2]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### unionWith
+
+使用提供的比较器函数返回两个数组的并集。
+
+创建一个`Set`，其中包含`a`的所有值和`b`中的值，比较器在`a`中找不到匹配，使用`Array.prototype.findIndex()`。
+
+```js
+const unionWith = (a, b, comp) =>
+  Array.from(new Set([...a, ...b.filter(x => a.findIndex(y => comp(x, y)) === -1)]));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+unionWith([1, 1.2, 1.5, 3, 0], [1.9, 3, 0, 3.9], (a, b) => Math.round(a) === Math.round(b)); // [1, 1.2, 1.5, 3, 0, 3.9]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### uniqueElements
+
+返回数组的所有唯一值。
+
+使用ES6`Set`和`... rest`运算符可以丢弃所有重复的值。
+
+```js
+const uniqueElements = arr => [...new Set(arr)];
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+uniqueElements([1, 2, 2, 3, 4, 4, 5]); // [1, 2, 3, 4, 5]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### uniqueElementsBy
+
+根据提供的比较器函数返回数组的所有唯一值。
+
+根据比较器函数`fn`，使用`Array.prototype.reduce()`和`Array.prototype.some()`作为一个只包含每个值的第一个唯一出现的数组。
+比较器函数有两个参数：被比较的两个元素的值。
+
+```js
+const uniqueElementsBy = (arr, fn) =>
+  arr.reduce((acc, v) => {
+    if (!acc.some(x => fn(v, x))) acc.push(v);
+    return acc;
+  }, []);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+uniqueElementsBy(
+  [
+    { id: 0, value: 'a' },
+    { id: 1, value: 'b' },
+    { id: 2, value: 'c' },
+    { id: 1, value: 'd' },
+    { id: 0, value: 'e' }
+  ],
+  (a, b) => a.id == b.id
+); // [ { id: 0, value: 'a' }, { id: 1, value: 'b' }, { id: 2, value: 'c' } ]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### uniqueElementsByRight
+
+从右侧开始，根据提供的比较器函数返回数组的所有唯一值。
+
+根据比较器函数`fn`，使用`Array.prototype.reduceRight()`和`Array.prototype.some()`作为一个只包含每个值的最后一个唯一出现的数组。
+比较器函数有两个参数：被比较的两个元素的值。
+
+```js
+const uniqueElementsByRight = (arr, fn) =>
+  arr.reduceRight((acc, v) => {
+    if (!acc.some(x => fn(v, x))) acc.push(v);
+    return acc;
+  }, []);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+uniqueElementsByRight(
+  [
+    { id: 0, value: 'a' },
+    { id: 1, value: 'b' },
+    { id: 2, value: 'c' },
+    { id: 1, value: 'd' },
+    { id: 0, value: 'e' }
+  ],
+  (a, b) => a.id == b.id
+); // [ { id: 0, value: 'e' }, { id: 1, value: 'd' }, { id: 2, value: 'c' } ]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### uniqueSymmetricDifference
+
+返回两个数组之间唯一的对称差异，不包含任一数组的重复值。
+
+在每个数组上使用`Array.prototype.filter()`和`Array.prototype.includes()`来删除另一个数组中包含的值，然后从结果中创建一个`Set`，删除重复的值。
+
+```js
+const uniqueSymmetricDifference = (a, b) => [
+  ...new Set([...a.filter(v => !b.includes(v)), ...b.filter(v => !a.includes(v))])
+];
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+uniqueSymmetricDifference([1, 2, 3], [1, 2, 4]); // [3, 4]
+uniqueSymmetricDifference([1, 2, 2], [1, 3, 1]); // [2, 3]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### unzip
+
+创建一个数组数组，将[zip](#zip)生成的数组中的元素取消分组。
+
+使用`Math.max.apply()`来获取数组中最长的子数组，`Array.prototype.map()`，使每个元素成为一个数组。
+使用`Array.prototype.reduce()`和`Array.prototype.forEach()`将分组值映射到单个数组。
+
+```js
+const unzip = arr =>
+  arr.reduce(
+    (acc, val) => (val.forEach((v, i) => acc[i].push(v)), acc),
+    Array.from({
+      length: Math.max(...arr.map(x => x.length))
+    }).map(x => [])
+  );
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+unzip([['a', 1, true], ['b', 2, false]]); // [['a', 'b'], [1, 2], [true, false]]
+unzip([['a', 1, true], ['b', 2]]); // [['a', 'b'], [1, 2], [true]]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### unzipWith ![advanced](/advanced.svg)
+
+创建一个元素数组，将[zip](#zip)生成的数组中的元素取消组合并应用提供的函数。
+
+使用`Math.max.apply（）`来获取数组中最长的子数组，`Array.prototype.map（）`，使每个元素成为一个数组。
+使用`Array.prototype.reduce（）`和`Array.prototype.forEach（）`将分组值映射到单个数组。
+使用`Array.prototype.map（）`和扩展运算符（`...`）将`fn`应用于每个单独的元素组。
+
+```js
+const unzipWith = (arr, fn) =>
+  arr
+    .reduce(
+      (acc, val) => (val.forEach((v, i) => acc[i].push(v)), acc),
+      Array.from({
+        length: Math.max(...arr.map(x => x.length))
+      }).map(x => [])
+    )
+    .map(val => fn(...val));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+unzipWith([[1, 10, 100], [2, 20, 200]], (...args) => args.reduce((acc, v) => acc + v, 0)); // [3, 30, 300]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+
 
 
 
