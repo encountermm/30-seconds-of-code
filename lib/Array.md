@@ -2379,9 +2379,9 @@ unzip([['a', 1, true], ['b', 2]]); // [['a', 'b'], [1, 2], [true]]
 
 创建一个元素数组，将[zip](#zip)生成的数组中的元素取消组合并应用提供的函数。
 
-使用`Math.max.apply（）`来获取数组中最长的子数组，`Array.prototype.map（）`，使每个元素成为一个数组。
-使用`Array.prototype.reduce（）`和`Array.prototype.forEach（）`将分组值映射到单个数组。
-使用`Array.prototype.map（）`和扩展运算符（`...`）将`fn`应用于每个单独的元素组。
+使用`Math.max.apply()`来获取数组中最长的子数组，`Array.prototype.map()`，使每个元素成为一个数组。
+使用`Array.prototype.reduce()`和`Array.prototype.forEach()`将分组值映射到单个数组。
+使用`Array.prototype.map()`和扩展运算符（`...`）将`fn`应用于每个单独的元素组。
 
 ```js
 const unzipWith = (arr, fn) =>
@@ -2405,6 +2405,144 @@ unzipWith([[1, 10, 100], [2, 20, 200]], (...args) => args.reduce((acc, v) => acc
 </details>
 
 <br>[⬆ 返回顶部](#contents)
+
+<!-- 2019年8月15日 22:32:32 -->
+### without
+
+过滤掉具有指定值之一的数组元素。
+
+使用`Array.prototype.filter()`创建一个数组，排除（使用`！Array.includes()`）所有给定的值。
+
+_(对于改变原始数组的片段，请参见[`pull`](＃pull))_
+
+```js
+const without = (arr, ...args) => arr.filter(v => !args.includes(v));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+without([2, 1, 2, 3], 1, 2); // [3]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### xProd
+
+返回两个数组`排列组合`成一对的新数组。
+
+使用`Array.prototype.reduce()`，`Array.prototype.map()`和`Array.prototype.concat()`从两个数组的元素中生成每个可能的`组合`对，并将它们保存在一个数组中。
+
+```js
+const xProd = (a, b) => a.reduce((acc, x) => acc.concat(b.map(y => [x, y])), []);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+xProd([1, 2], ['a', 'b']); // [[1, 'a'], [1, 'b'], [2, 'a'], [2, 'b']]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### zip
+
+创建一个元素数组，根据原始数组中的位置进行分组。
+
+使用`Math.max.apply()`来获取参数中最长的数组。
+创建一个以该长度作为返回值的数组，并使用带有map-function的“Array.from（）”来创建一个分组元素数组。
+如果参数数组的长度不同，则在未找到值的情况下使用“undefined”。
+
+```js
+const zip = (...arrays) => {
+  const maxLength = Math.max(...arrays.map(x => x.length));
+  return Array.from({ length: maxLength }).map((_, i) => {
+    return Array.from({ length: arrays.length }, (_, k) => arrays[k][i]);
+  });
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+zip(['a', 'b'], [1, 2], [true, false]); // [['a', 1, true], ['b', 2, false]]
+zip(['a'], [1, 2], [true, false]); // [['a', 1, true], [undefined, 2, false]]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### zipObject
+
+给定有效属性标识符和值数组的数组，返回将属性与值相关联的对象。
+
+由于对象可以具有未定义的值但不具有未定义的属性指针，因此使用`Array.prototype.reduce()`来使用属性数组来确定结果对象的结构。
+
+```js
+const zipObject = (props, values) =>
+  props.reduce((obj, prop, index) => ((obj[prop] = values[index]), obj), {});
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+zipObject(['a', 'b', 'c'], [1, 2]); // {a: 1, b: 2, c: undefined}
+zipObject(['a', 'b'], [1, 2, 3]); // {a: 1, b: 2}
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### zipWith ![advanced](/advanced.svg)
+
+创建一个元素数组，根据原始数组中的位置进行分组，并使用函数作为最后一个值来指定应如何组合分组值。
+
+检查提供的最后一个参数是否为函数。
+使用`Math.max()`来获取参数中最长的数组。
+创建一个以该长度作为返回值的数组，并使用带有map-function的“Array.from（）”来创建一个分组元素数组。
+如果参数数组的长度不同，则在未找到值的情况下使用“undefined”。
+使用每个组`(... group)`的元素调用该函数。
+
+```js
+const zipWith = (...array) => {
+  const fn = typeof array[array.length - 1] === 'function' ? array.pop() : undefined;
+  return Array.from(
+    { length: Math.max(...array.map(a => a.length)) },
+    (_, i) => (fn ? fn(...array.map(a => a[i])) : array.map(a => a[i]))
+  );
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+zipWith([1, 2], [10, 20], [100, 200], (a, b, c) => a + b + c); // [111,222]
+zipWith(
+  [1, 2, 3],
+  [10, 20],
+  [100, 200],
+  (a, b, c) => (a != null ? a : 'a') + (b != null ? b : 'b') + (c != null ? c : 'c')
+); // [111, 222, '3bc']
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+
+---
+
 
 
 
