@@ -362,3 +362,378 @@ elementIsVisibleInViewport(el, true); // true - (partially visible)
 
 <br>[⬆ 返回顶部](#contents)
 
+<!-- 2019年8月17日 21:11:10 -->
+### formToObject
+
+将一组表单元素编码为`对象`。
+
+使用`FormData`构造函数将HTML`form`转换为`FormData`，`Array.from()`转换为数组。
+使用`Array.prototype.reduce()`从数组中收集对象。
+
+```js
+const formToObject = form =>
+  Array.from(new FormData(form)).reduce(
+    (acc, [key, value]) => ({
+      ...acc,
+      [key]: value
+    }),
+    {}
+  );
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+formToObject(document.querySelector('#form')); // { email: 'test@email.com', name: 'Test Name' }
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### getImages
+
+从元素中获取所有图像并将它们放入数组中
+
+使用`Element.prototype.getElementsByTagName()`来获取提供的元素中的所有`<img>`元素，`Array.prototype.map()`来映射它们各自的`<img>`元素的每个`src`属性， 然后创建一个`Set`来消除重复并返回数组。
+
+```js
+const getImages = (el, includeDuplicates = false) => {
+  const images = [...el.getElementsByTagName('img')].map(img => img.getAttribute('src'));
+  return includeDuplicates ? images : [...new Set(images)];
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+getImages(document, true); // ['image1.jpg', 'image2.png', 'image1.png', '...']
+getImages(document, false); // ['image1.jpg', 'image2.png', '...']
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### getScrollPosition
+
+返回当前页面的滚动位置。
+
+如果定义了`pageXOffset`和`pageYOffset`，则使用`scrollLeft`和`scrollTop`。
+您可以省略`el`来使用默认值`window`。
+
+```js
+const getScrollPosition = (el = window) => ({
+  x: el.pageXOffset !== undefined ? el.pageXOffset : el.scrollLeft,
+  y: el.pageYOffset !== undefined ? el.pageYOffset : el.scrollTop
+});
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+getScrollPosition(); // {x: 0, y: 200}
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### getStyle
+
+返回指定元素的CSS规则的值。
+
+使用`Window.getComputedStyle()`获取指定元素的CSS规则的值。
+
+```js
+const getStyle = (el, ruleName) => getComputedStyle(el)[ruleName];
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+getStyle(document.querySelector('p'), 'font-size'); // '16px'
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### hasClass
+
+如果元素具有指定的类，则返回“true”，否则返回“false”。
+
+使用`element.classList.contains()`来检查元素是否具有指定的类。
+
+```js
+const hasClass = (el, className) => el.classList.contains(className);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+hasClass(document.querySelector('p.special'), 'special'); // true
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### hashBrowser ![advanced](/advanced.svg)
+
+使用[SHA-256](https://en.wikipedia.org/wiki/SHA-2)算法为值创建哈希值。 返回一个promise。
+
+使用[SubtleCrypto](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto)API为给定值创建哈希。
+
+```js
+const hashBrowser = val =>
+  crypto.subtle.digest('SHA-256', new TextEncoder('utf-8').encode(val)).then(h => {
+    let hexes = [],
+      view = new DataView(h);
+    for (let i = 0; i < view.byteLength; i += 4)
+      hexes.push(('00000000' + view.getUint32(i).toString(16)).slice(-8));
+    return hexes.join('');
+  });
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+hashBrowser(JSON.stringify({ a: 'a', b: [1, 2, 3, 4], foo: { c: 'bar' } })).then(console.log); // '04aa106279f5977f59f9067fa9712afc4aedc6f5862a8defc34552d8c7206393'
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### hide
+
+隐藏指定的所有元素。
+
+使用`NodeList.prototype.forEach()`将`display：none`应用于指定的每个元素。
+
+```js
+const hide = (...el) => [...el].forEach(e => (e.style.display = 'none'));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+hide(document.querySelectorAll('img')); // Hides all <img> elements on the page
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### httpsRedirect
+
+如果页面当前处于HTTP状态，则将页面重定向到HTTPS。 此外，按下后退按钮不会将其恢复到HTTP页面，因为它已在历史记录中替换。
+
+使用`location.protocol`来获取当前使用的协议。 如果它不是HTTPS，请使用`location.replace()`将现有页面替换为页面的HTTPS版本。 使用`location.href`获取完整地址，用`String.prototype.split()`拆分它，并删除URL的协议部分。
+
+```js
+const httpsRedirect = () => {
+  if (location.protocol !== 'https:') location.replace('https://' + location.href.split('//')[1]);
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+httpsRedirect(); // If you are on http://mydomain.com, you are redirected to https://mydomain.com
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### insertAfter
+
+在指定元素结束后插入HTML字符串。
+
+使用`el.insertAdjacentHTML()`和`'afterend'的位置来解析`htmlString`并在`el`结束后插入它。
+
+```js
+const insertAfter = (el, htmlString) => el.insertAdjacentHTML('afterend', htmlString);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+insertAfter(document.getElementById('myId'), '<p>after</p>'); // <div id="myId">...</div> <p>after</p>
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### insertBefore
+
+在指定元素的开头之前插入HTML字符串。
+
+使用`el.insertAdjacentHTML()`和`'beforebegin'`的位置来解析`htmlString`并在`el`的开头之前插入它。
+
+```js
+const insertBefore = (el, htmlString) => el.insertAdjacentHTML('beforebegin', htmlString);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+insertBefore(document.getElementById('myId'), '<p>before</p>'); // <p>before</p> <div id="myId">...</div>
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### isBrowserTabFocused
+
+如果页面的浏览器选项卡是聚焦的，则返回`true`，否则返回`false`。
+
+使用Page Visibility API引入的`Document.hidden`属性来检查页面的浏览器选项卡是可见还是隐藏。
+
+```js
+const isBrowserTabFocused = () => !document.hidden;
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+isBrowserTabFocused(); // true
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### nodeListToArray
+
+将`NodeList`转换为数组。
+
+在新数组中使用`spread`运算符（扩展运算符`...`）将`NodeList`转换为数组。
+
+```js
+const nodeListToArray = nodeList => [...nodeList];
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+nodeListToArray(document.childNodes); // [ <!DOCTYPE html>, html ]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### observeMutations ![advanced](/advanced.svg)
+
+返回一个新的`MutationObserver`，并为指定元素上的每个变异运行提供的回调。
+
+使用[`MutationObserver`](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)观察给定元素的突变。
+使用`Array.prototype.forEach()`为每个观察到的突变运行回调。
+省略第三个参数`options`，使用默认[options](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver#MutationObserverInit)（全部为'true`）。
+
+```js
+const observeMutations = (element, callback, options) => {
+  const observer = new MutationObserver(mutations => mutations.forEach(m => callback(m)));
+  observer.observe(
+    element,
+    Object.assign(
+      {
+        childList: true,
+        attributes: true,
+        attributeOldValue: true,
+        characterData: true,
+        characterDataOldValue: true,
+        subtree: true
+      },
+      options
+    )
+  );
+  return observer;
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+const obs = observeMutations(document, console.log); // Logs all mutations that happen on the page
+obs.disconnect(); // Disconnects the observer and stops logging mutations on the page
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### off
+
+从元素中删除事件监听器。
+
+使用`EventTarget.removeEventListener()`从元素中删除事件监听器。
+省略第四个参数`opts`使用`false`或根据添加事件监听器时使用的选项指定它。
+
+```js
+const off = (el, evt, fn, opts = false) => el.removeEventListener(evt, fn, opts);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+const fn = () => console.log('!');
+document.body.addEventListener('click', fn);
+off(document.body, 'click', fn); // no longer logs '!' upon clicking on the page
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### on
+
+向具有使用事件委派功能的元素添加事件监听器。
+
+使用`EventTarget.addEventListener()`向元素添加事件监听器。 如果有一个`target`属性提供给options对象，请确保事件目标与指定的目标匹配，然后通过提供正确的`this`上下文来调用回调。
+返回对自定义委托者函数的引用，以便可以与[`off`]（#off）一起使用。
+省略`opts`以默认为非委托行为和事件冒泡。
+
+```js
+const on = (el, evt, fn, opts = {}) => {
+  const delegatorFn = e => e.target.matches(opts.target) && fn.call(e.target, e);
+  el.addEventListener(evt, opts.target ? delegatorFn : fn, opts.options || false);
+  if (opts.target) return delegatorFn;
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+const fn = () => console.log('!');
+on(document.body, 'click', fn); // logs '!' upon clicking the body
+on(document.body, 'click', fn, { target: 'p' }); // logs '!' upon clicking a `p` element child of the body
+on(document.body, 'click', fn, { options: true }); // use capturing instead of bubbling
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+
+

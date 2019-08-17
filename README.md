@@ -19,7 +19,8 @@
 
 ## 最新记要
 
-- 2019年8月16日 22:03:07 -- 翻译更新至`Browser`的`elementIsVisibleInViewport`
+- 2019年8月17日 21:26:43 -- 翻译更新至`Browser`的`on`方法
+- 2019年8月16日 22:03:07 -- 翻译更新至`Browser`的`elementIsVisibleInViewport`方法
 - 2019年8月15日 23:20:58 -- `Array`及`Adapter`之前遗漏部分翻译完毕
 - 2019年8月14日 17:24:15 -- 翻译更新至`Array`的`unzipWith`方法 
 - 2019年8月13日 22:16:30 -- 翻译更新至`Array`的`takeWhile`方法 
