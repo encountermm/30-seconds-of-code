@@ -34,6 +34,7 @@
 
 - [🔌 Adapter](/lib/Adapter.md)
 - [📚 Array](/lib/Array.md)
+- [📚 Browser](/lib/Browser.md)
 
 
 
