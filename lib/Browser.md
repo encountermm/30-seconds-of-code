@@ -646,7 +646,7 @@ nodeListToArray(document.childNodes); // [ <!DOCTYPE html>, html ]
 
 使用[`MutationObserver`](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)观察给定元素的突变。
 使用`Array.prototype.forEach()`为每个观察到的突变运行回调。
-省略第三个参数`options`，使用默认[options](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver#MutationObserverInit)（全部为'true`）。
+省略第三个参数`options`，使用默认[options](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver#MutationObserverInit)（全部为`true`）。
 
 ```js
 const observeMutations = (element, callback, options) => {
@@ -710,7 +710,7 @@ off(document.body, 'click', fn); // no longer logs '!' upon clicking on the page
 向具有使用事件委派功能的元素添加事件监听器。
 
 使用`EventTarget.addEventListener()`向元素添加事件监听器。 如果有一个`target`属性提供给options对象，请确保事件目标与指定的目标匹配，然后通过提供正确的`this`上下文来调用回调。
-返回对自定义委托者函数的引用，以便可以与[`off`]（#off）一起使用。
+返回对自定义委托者函数的引用，以便可以与[`off`](#off)一起使用。
 省略`opts`以默认为非委托行为和事件冒泡。
 
 ```js
@@ -734,6 +734,388 @@ on(document.body, 'click', fn, { options: true }); // use capturing instead of b
 </details>
 
 <br>[⬆ 返回顶部](#contents)
+<!-- 2019年8月18日 20:07:22 -->
+
+
+### onUserInputChange ![advanced](/advanced.svg)
+
+每当用户输入类型改变时（`mouse`或`touch`）运行回调。 用于根据输入设备启用/禁用代码。 该过程是动态的并且适用于混合设备（例如，触摸屏笔记本电脑）。
+
+使用两个事件侦听器。 首先假设`mouse`输入并将`touchstart`事件监听器绑定到文档。
+在`touchstart`上，添加一个`mousemove`事件监听器，使用`performance.now()`监听在20ms内触发的两个连续`mousemove`事件。
+在任何一种情况下，使用输入类型作为参数运行回调。
+
+```js
+const onUserInputChange = callback => {
+  let type = 'mouse',
+    lastTime = 0;
+  const mousemoveHandler = () => {
+    const now = performance.now();
+    if (now - lastTime < 20)
+      (type = 'mouse'), callback(type), document.removeEventListener('mousemove', mousemoveHandler);
+    lastTime = now;
+  };
+  document.addEventListener('touchstart', () => {
+    if (type === 'touch') return;
+    (type = 'touch'), callback(type), document.addEventListener('mousemove', mousemoveHandler);
+  });
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+onUserInputChange(type => {
+  console.log('The user is now using', type, 'as an input method.');
+});
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### prefix
+
+返回浏览器支持的CSS属性的前缀版本（如果需要）。
+
+在供应商前缀字符串数组上使用`Array.prototype.findIndex()`来测试`document.body`是否在其`CSSStyleDeclaration`对象中定义了其中一个，否则返回`null`。
+使用`String.prototype.charAt()`和`String.prototype.toUpperCase()`来大写属性，该属性将附加到供应商前缀字符串。
+
+```js
+const prefix = prop => {
+  const capitalizedProp = prop.charAt(0).toUpperCase() + prop.slice(1);
+  const prefixes = ['', 'webkit', 'moz', 'ms', 'o'];
+  const i = prefixes.findIndex(
+    prefix => typeof document.body.style[prefix ? prefix + capitalizedProp : prop] !== 'undefined'
+  );
+  return i !== -1 ? (i === 0 ? prop : prefixes[i] + capitalizedProp) : null;
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+prefix('appearance'); // 'appearance' on a supported browser, otherwise 'webkitAppearance', 'mozAppearance', 'msAppearance' or 'oAppearance'
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### recordAnimationFrames
+
+在每个动画帧上调用提供的回调。
+
+使用递归。
+如果`running`是`true`，则继续调用`window.requestAnimationFrame()`，它调用提供的回调。
+使用两个方法`start`和`stop`返回一个对象，以允许手动控制录制。
+省略第二个参数`autoStart`，在调用函数时隐式调用`start`。
+
+```js
+const recordAnimationFrames = (callback, autoStart = true) => {
+  let running = true,
+    raf;
+  const stop = () => {
+    running = false;
+    cancelAnimationFrame(raf);
+  };
+  const start = () => {
+    running = true;
+    run();
+  };
+  const run = () => {
+    raf = requestAnimationFrame(() => {
+      callback();
+      if (running) run();
+    });
+  };
+  if (autoStart) start();
+  return { start, stop };
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+const cb = () => console.log('Animation frame fired');
+const recorder = recordAnimationFrames(cb); // logs 'Animation frame fired' on each animation frame
+recorder.stop(); // stops logging
+recorder.start(); // starts again
+const recorder2 = recordAnimationFrames(cb, false); // `start` needs to be explicitly called to begin recording frames
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### redirect
+重定向到指定的URL。
+
+使用`window.location.href`或`window.location.replace()`重定向到`url`。
+传递第二个参数来模拟链接点击（`true` - 默认）或HTTP重定向（`false`）。
+
+```js
+const redirect = (url, asLink = true) =>
+  asLink ? (window.location.href = url) : window.location.replace(url);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+redirect('https://google.com');
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### runAsync ![advanced](/advanced.svg)
+
+使用[Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)在单独的线程中运行函数，允许长时间运行的函数不阻止UI。
+
+使用`Blob`对象URL创建一个新的`Worker`，其内容应该是所提供函数的字符串化版本。
+立即发布回调函数的返回值。
+返回一个promise，侦听`onmessage`和`onerror`事件并解析从worker返回的数据，或者抛出错误。
+
+```js
+const runAsync = fn => {
+  const worker = new Worker(
+    URL.createObjectURL(new Blob([`postMessage((${fn})());`]), {
+      type: 'application/javascript; charset=utf-8'
+    })
+  );
+  return new Promise((res, rej) => {
+    worker.onmessage = ({ data }) => {
+      res(data), worker.terminate();
+    };
+    worker.onerror = err => {
+      rej(err), worker.terminate();
+    };
+  });
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+const longRunningFunction = () => {
+  let result = 0;
+  for (let i = 0; i < 1000; i++)
+    for (let j = 0; j < 700; j++) for (let k = 0; k < 300; k++) result = result + i + j + k;
+
+  return result;
+};
+/*
+  NOTE: Since the function is running in a different context, closures are not supported.
+  The function supplied to `runAsync` gets stringified, so everything becomes literal.
+  All variables and functions must be defined inside.
+*/
+runAsync(longRunningFunction).then(console.log); // 209685000000
+runAsync(() => 10 ** 3).then(console.log); // 1000
+let outsideVariable = 50;
+runAsync(() => typeof outsideVariable).then(console.log); // 'undefined'
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### scrollToTop
+
+平滑滚动到页面顶部。
+
+使用`document.documentElement.scrollTop`或`document.body.scrollTop`与顶部保持距离。
+滚动距离顶部一小部分距离。 使用`window.requestAnimationFrame()`来动画滚动。
+```js
+const scrollToTop = () => {
+  const c = document.documentElement.scrollTop || document.body.scrollTop;
+  if (c > 0) {
+    window.requestAnimationFrame(scrollToTop);
+    window.scrollTo(0, c - c / 8);
+  }
+};
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+scrollToTop();
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### serializeForm
+
+将一组表单元素编码为查询字符串。
+
+使用`FormData`构造函数将HTML`form`转换为`FormData`，`Array.from()`转换为数组，并将map函数作为第二个参数传递。
+使用`Array.prototype.map()`和`window.encodeURIComponent()`来编码每个字段的值。
+使用带有适当参数的`Array.prototype.join()`来生成适当的查询字符串。
+
+```js
+const serializeForm = form =>
+  Array.from(new FormData(form), field => field.map(encodeURIComponent).join('=')).join('&');
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+serializeForm(document.querySelector('#form')); // email=test%40email.com&name=Test%20Name
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### setStyle
+
+设置指定元素的CSS规则的值。
+
+使用`element.style`将指定元素的CSS规则值设置为`val`。
+
+```js
+const setStyle = (el, ruleName, val) => (el.style[ruleName] = val);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+setStyle(document.querySelector('p'), 'font-size', '20px'); // The first <p> element on the page will have a font-size of 20px
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### show
+
+显示指定的所有元素。
+
+使用扩展运算符（`...`）和`Array.prototype.forEach()`清除指定的每个元素的`display`属性。
+
+```js
+const show = (...el) => [...el].forEach(e => (e.style.display = ''));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+show(...document.querySelectorAll('img')); // Shows all <img> elements on the page
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### smoothScroll
+
+平滑地将调用它的元素滚动到浏览器窗口的可见区域。
+
+使用`.scrollIntoView`方法滚动元素。
+将`{behavior：'smooth'}`传递给`.scrollIntoView`，使其顺畅滚动。
+```js
+const smoothScroll = element =>
+  document.querySelector(element).scrollIntoView({
+    behavior: 'smooth'
+  });
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+smoothScroll('#fooBar'); // scrolls smoothly to the element with the id fooBar
+smoothScroll('.fooBar'); // scrolls smoothly to the first element with a class of fooBar
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### toggleClass
+
+切换元素的类。
+
+使用`element.classList.toggle()`来切换元素的指定类。
+
+```js
+const toggleClass = (el, className) => el.classList.toggle(className);
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+toggleClass(document.querySelector('p.special'), 'special'); // The paragraph will not have the 'special' class anymore
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### triggerEvent
+
+触发给定元素上的特定事件，可选地传递自定义数据。
+
+使用`new CustomEvent()`从指定的`eventType`和细节创建一个事件。
+使用`el.dispatchEvent()`来触发给定元素上新创建的事件。
+如果您不想将自定义数据传递给触发事件，请省略第三个参数`detail`。
+
+```js
+const triggerEvent = (el, eventType, detail) =>
+  el.dispatchEvent(new CustomEvent(eventType, { detail }));
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+triggerEvent(document.getElementById('myId'), 'click');
+triggerEvent(document.getElementById('myId'), 'click', { username: 'bob' });
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### UUIDGeneratorBrowser
+
+在浏览器中生成UUID。
+
+使用`crypto` API生成符合[RFC4122](https://www.ietf.org/rfc/rfc4122.txt)版本4的UUID。
+
+```js
+const UUIDGeneratorBrowser = () =>
+  ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+    (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
+  );
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+UUIDGeneratorBrowser(); // '7982fcfe-5721-4632-bede-6000885be57d'
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+
+---
+
 
 
 
