@@ -18,7 +18,7 @@
 >【注】：本人能力有限，如有翻译不当，欢迎指正。
 
 ## 最新记要
-
+- 2019年8月19日 22:30:41 -- `Date`部分翻译完毕
 - 2019年8月18日 21:41:34 -- `Browser`部分翻译完毕
 - 2019年8月17日 21:26:43 -- 翻译更新至`Browser`的`on`方法
 - 2019年8月16日 22:03:07 -- 翻译更新至`Browser`的`elementIsVisibleInViewport`方法
@@ -36,6 +36,7 @@
 - [🔌 Adapter](/lib/Adapter.md)
 - [📚 Array](/lib/Array.md)
 - [📚 Browser](/lib/Browser.md)
+- [📚 Date](/lib/Date.md)
 
 
 
