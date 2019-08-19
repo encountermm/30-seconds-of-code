@@ -35,8 +35,8 @@
 
 - [🔌 Adapter](/lib/Adapter.md)
 - [📚 Array](/lib/Array.md)
-- [📚 Browser](/lib/Browser.md)
-- [📚 Date](/lib/Date.md)
+- [🌐  Browser](/lib/Browser.md)
+- [⏱️ Date](/lib/Date.md)
 
 
 
