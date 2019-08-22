@@ -347,7 +347,7 @@ window.addEventListener(
 
 延迟调用函数，直到当前调用堆栈清除为止。
 
-使用超时为 1ms 的`setTimeout（）`将新事件添加到浏览器事件队列，并允许渲染引擎完成其工作。 使用 spread（`...`）运算符为函数提供任意数量的参数。
+使用超时为 1ms 的`setTimeout()`将新事件添加到浏览器事件队列，并允许渲染引擎完成其工作。 使用 spread（`...`）运算符为函数提供任意数量的参数。
 
 ```js
 const defer = (fn, ...args) => setTimeout(fn, 1, ...args)
@@ -374,7 +374,7 @@ defer(longRunningFunction) // Browser will update the HTML then run the function
 
 在`wait`毫秒后调用提供的函数。
 
-使用`setTimeout（）`来延迟执行`fn`。
+使用`setTimeout()`来延迟执行`fn`。
 使用 spread（`...`）运算符为函数提供任意数量的参数。
 
 ```js
@@ -402,7 +402,7 @@ delay(
 
 记录函数的名称。
 
-使用`console.debug（）`和传递方法的`name`属性将方法的名称记录到控制台的`debug`通道。
+使用`console.debug()`和传递方法的`name`属性将方法的名称记录到控制台的`debug`通道。
 
 ```js
 const functionName = fn => (console.debug(fn.name), fn)
@@ -424,7 +424,7 @@ functionName(Math.max) // max (logged in debug channel of console)
 返回每秒执行函数的次数。
 `hz`是`hertz`的单位，频率单位定义为每秒一个周期。
 
-使用`performance.now（）`来获取迭代循环之前和之后的毫秒差异，以计算执行函数`iterations`次所经过的时间。
+使用`performance.now()`来获取迭代循环之前和之后的毫秒差异，以计算执行函数`iterations`次所经过的时间。
 通过将毫秒转换为秒并将其除以经过的时间来返回每秒的周期数。
 省略第二个参数`iterations`，使用默认的 100 次迭代。
 
@@ -600,7 +600,7 @@ greetJohn('Hello') // 'Hello John!'
 
 运行一系列承诺串联。
 
-使用`Array.prototype.reduce（）`创建一个 promise 链，每个 promise 在解析时返回下一个 promise。
+使用`Array.prototype.reduce()`创建一个 promise 链，每个 promise 在解析时返回下一个 promise。
 
 ```js
 const runPromisesInSeries = ps => ps.reduce((p, next) => p.then(next), Promise.resolve())
@@ -617,3 +617,190 @@ runPromisesInSeries([() => delay(1000), () => delay(2000)]) // Executes each pro
 </details>
 
 <br>[⬆ 返回顶部](#contents)
+
+<!-- 2019年8月22日 21:31:16 -->
+
+### sleep
+
+延迟异步函数的执行。
+
+延迟执行`async`函数的一部分，通过将其置于睡眠状态，返回一个`Promise`。
+
+```js
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+async function sleepyWork() {
+	console.log("I'm going to sleep for 1 second.")
+	await sleep(1000)
+	console.log('I woke up after 1 second.')
+}
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### throttle ![advanced](/advanced.svg)
+
+创建一个限制函数，每个`wait`毫秒最多只调用一次提供的函数
+
+使用`setTimeout()`和`clearTimeout()`来限制给定的方法`fn`。
+使用`Function.prototype.apply()`将`this`上下文应用于函数并提供必要的`参数`。
+使用`Date.now()`来跟踪上次调用限制函数的时间。
+省略第二个参数`wait`，将超时设置为默认值 0 ms。
+
+```js
+const throttle = (fn, wait) => {
+	let inThrottle, lastFn, lastTime
+	return function() {
+		const context = this,
+			args = arguments
+		if (!inThrottle) {
+			fn.apply(context, args)
+			lastTime = Date.now()
+			inThrottle = true
+		} else {
+			clearTimeout(lastFn)
+			lastFn = setTimeout(function() {
+				if (Date.now() - lastTime >= wait) {
+					fn.apply(context, args)
+					lastTime = Date.now()
+				}
+			}, Math.max(wait - (Date.now() - lastTime), 0))
+		}
+	}
+}
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+window.addEventListener(
+	'resize',
+	throttle(function(evt) {
+		console.log(window.innerWidth)
+		console.log(window.innerHeight)
+	}, 250)
+) // Will log the window dimensions at most every 250ms
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### times
+
+迭代回调`n`次
+
+使用`Function.call()`来调用` fn``n `次或直到它返回`false`。
+省略最后一个参数`context`，以使用`undefined`对象（或非严格模式下的全局对象）。
+
+```js
+const times = (n, fn, context = undefined) => {
+	let i = 0
+	while (fn.call(context, i) !== false && ++i < n) {}
+}
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+var output = ''
+times(5, i => (output += i))
+console.log(output) // 01234
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### uncurry
+
+取消深度为`n`的函数。
+
+返回一个可变函数。
+在提供的参数上使用`Array.prototype.reduce()`来调用函数的每个后续 curry 级别。
+如果提供的参数的`length`小于`n`则抛出错误。
+否则，使用`Array.prototype.slice（0，n）`使用适当数量的参数调用`fn`。
+省略第二个参数，`n`，以证明深度为“1”。
+
+```js
+const uncurry = (fn, n = 1) => (...args) => {
+	const next = acc => args => args.reduce((x, y) => x(y), acc)
+	if (n > args.length) throw new RangeError('Arguments too few!')
+	return next(fn)(args.slice(0, n))
+}
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+const add = x => y => z => x + y + z
+const uncurriedAdd = uncurry(add, 3)
+uncurriedAdd(1, 2, 3) // 6
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### unfold
+
+使用迭代器函数和初始种子值构建数组。
+
+使用`while`循环和`Array.prototype.push()`重复调用该函数，直到它返回`false`。
+迭代器函数接受一个参数（`seed`）并且必须始终返回一个带有两个元素（[`value`，`nextSeed`]）或`false`的数组来终止。
+
+```js
+const unfold = (fn, seed) => {
+	let result = [],
+		val = [null, seed]
+	while ((val = fn(val[1]))) result.push(val[0])
+	return result
+}
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+var f = n => (n > 50 ? false : [-n, n + 10])
+unfold(f, 10) // [-10, -20, -30, -40, -50]
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+### when
+
+针对谓词函数测试值`x`。 如果是`true`，则返回`fn(x)`。 否则，返回`x`。
+
+返回一个期望单个值`x`的函数，它返回基于`pred`的适当值。
+
+```js
+const when = (pred, whenTrue) => x => (pred(x) ? whenTrue(x) : x)
+```
+
+<details>
+<summary>Examples</summary>
+
+```js
+const doubleEvenNumbers = when(x => x % 2 === 0, x => x * 2)
+doubleEvenNumbers(2) // 4
+doubleEvenNumbers(1) // 1
+```
+
+</details>
+
+<br>[⬆ 返回顶部](#contents)
+
+---
